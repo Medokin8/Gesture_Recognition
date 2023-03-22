@@ -10,13 +10,20 @@ mp_hands = mp.solutions.hands
 # For static images:
 #IMAGE_FILES = ["/home/nikodem/hand_detection/hand.png", "/home/nikodem/hand_detection/hand_palm.png", "/home/nikodem/hand_detection/fist.png", "/home/nikodem/hand_detection/dislike.png"]
 IMAGE_FILES = []
-FOLDERS=["/home/nikodem/hand_detection/tmp", "/home/nikodem/hand_detection/fist1", "/home/nikodem/hand_detection/palm1"]
-for i in range(3):
+FOLDERS=["/home/nikodem/hand_detection/tmp1", "/home/nikodem/hand_detection/dislike1", "/home/nikodem/hand_detection/fist1", "/home/nikodem/hand_detection/like1", "/home/nikodem/hand_detection/palm1", "/home/nikodem/hand_detection/peace1",]
+for i in range(2):
     directory = FOLDERS[i]
+    str_tmp = FOLDERS[i]
+    str_tmp = str_tmp[:len(str_tmp)-1]
+    directory_write = str_tmp
+    #print(directory_write)
+    
+    IMAGE_FILES.clear()
+    #print(IMAGE_FILES)
     for filename in os.listdir(directory):
         if filename.endswith(".png"):
             IMAGE_FILES.append(directory + "/" + filename)
-            #print(IMAGE_FILES)
+            #print(len(IMAGE_FILES))
             continue
         else:
             continue     
@@ -24,7 +31,7 @@ for i in range(3):
     with mp_hands.Hands(
         static_image_mode=True,
         max_num_hands=1,
-        min_detection_confidence=0.5) as hands:
+        min_detection_confidence=0.8) as hands:
 
         for idx, file in enumerate(IMAGE_FILES):
             # Read an image, flip it around y-axis for correct handedness output (see
@@ -40,6 +47,7 @@ for i in range(3):
             image_height, image_width, _ = image.shape
             annotated_image = image.copy()
 
+            
             for hand_landmarks in results.multi_hand_landmarks:
                 #print('hand_landmarks:', hand_landmarks)
                 #print(type(hand_landmarks))
@@ -165,22 +173,42 @@ for i in range(3):
             max_width=max(max_width, int(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].x * image_width))
             min_width=min(min_width, int(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].x * image_width))
             
-            annotated_image = annotated_image[min_height-int(0.05*min_height):max_height+int(0.05*max_height), min_width-int(0.05*min_width):max_width+int(0.05*max_width)]
+            
+
+            #to avoid cropping below and above image
+            down_frame_height = min_height-int(0.05*min_height)
+            up_frame_height = max_height+int(0.05*max_height)
+            if down_frame_height <= 0:
+                down_frame_height = 0
+            if up_frame_height >= image_height:
+                up_frame_height = image_height
+            
+            down_frame_width= min_width-int(0.05*min_width)
+            up_frame_width = max_width+int(0.05*max_width)
+            if down_frame_width <= 0:
+                down_frame_width = 0
+            if up_frame_width >= image_width:
+                up_frame_width = image_width
+            
+                
+            annotated_image = annotated_image[down_frame_height:up_frame_height, down_frame_width:up_frame_width]
 
             size = (256, 256)
             annotated_image = cv2.resize(annotated_image, size, interpolation = cv2.INTER_LINEAR)
 
+            #print(results.multi_handedness)
+
             cv2.imwrite(
-                os.path.join(str(FOLDERS[i]),
+                os.path.join(directory_write,
                 str(idx) + '.png'), #str(FOLDERS[i]) + str(idx) + '.png'),
                 cv2.flip(annotated_image, 1))
 
             print("Przetoworzno: " + str(idx))
-            continue
-        
-        print()
-        print("skonczono folder: " + directory)
             
+            continue
+
+        print(len(IMAGE_FILES))
+        print("skonczono folder: " + directory)
             
             
             # Draw hand world landmarks.
