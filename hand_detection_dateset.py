@@ -8,10 +8,13 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
 FOLDERS = [
-    "/home/nikodem/IVSPA/tmp1",
     "/home/nikodem/IVSPA/dislike1",
     "/home/nikodem/IVSPA/fist1",
+    "/home/nikodem/IVSPA/like1",
+    "/home/nikodem/IVSPA/palm1",
+    "/home/nikodem/IVSPA/peace1"
 ]
+
 # For static images:
 IMAGE_FILES = []
 
@@ -38,9 +41,9 @@ for directory in FOLDERS:
             # Convert the BGR image to RGB before processing.
             results = hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
-            print(file)
+            #print(file)
             # Print handedness and draw hand landmarks on the image.
-            print("Handedness:", results.multi_handedness)
+            #print("Handedness:", results.multi_handedness)
 
             if not results.multi_hand_landmarks:
                 continue
@@ -61,7 +64,7 @@ for directory in FOLDERS:
             min_width = image_width
 
             if len(results.multi_hand_landmarks) >= 2:
-                print("if dla pliku dwie rece: ", file)
+                #print("if dla pliku dwie rece: ", file)
                 if (
                     results.multi_hand_landmarks[0]
                     .landmark[mp_hands.HandLandmark.WRIST]
@@ -131,12 +134,12 @@ for directory in FOLDERS:
                         )
 
             else:
-                print(
-                    "else dla pliku:  ",
-                    file,
-                    "   o dlug: ",
-                    len(results.multi_hand_landmarks),
-                )
+                # print(
+                #     "else dla pliku:  ",
+                #     file,
+                #     "   o dlug: ",
+                #     len(results.multi_hand_landmarks),
+                # )
                 hand_landmarks = results.multi_hand_landmarks[0]
                 for idx_hand in range(21):
                     max_height = max(
@@ -192,7 +195,7 @@ for directory in FOLDERS:
                 cv2.flip(annotated_image, 1),
             )
 
-            print("Przetoworzno: " + IMAGE_FILES[idx], "    jako:    ", str(idx))
+            #print("Przetoworzno: " + IMAGE_FILES[idx], "    jako:    ", str(idx))
             continue
 
         print("skonczono folder: " + directory)
@@ -204,20 +207,6 @@ for directory in FOLDERS:
         # for hand_world_landmarks in results.multi_hand_world_landmarks:
         #    mp_drawing.plot_landmarks(
         #        hand_world_landmarks, mp_hands.HAND_CONNECTIONS, azimuth=5)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 for directory in FOLDERS:
@@ -244,9 +233,9 @@ for directory in FOLDERS:
             # Convert the BGR image to RGB before processing.
             results = hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
-            print(file)
+            #print(file)
             # Print handedness and draw hand landmarks on the image.
-            print("Handedness:", results.multi_handedness)
+            #print("Handedness:", results.multi_handedness)
 
             if not results.multi_hand_landmarks:
                 continue
@@ -268,7 +257,7 @@ for directory in FOLDERS:
                     f.write(f"{number};")
 
 
-            print("Przetoworzno: " + IMAGE_FILES[idx], "    jako:    ", str(idx))
+            #print("Przetoworzno: " + IMAGE_FILES[idx], "    jako:    ", str(idx))
             continue
 
         print("skonczono folder: " + directory)
