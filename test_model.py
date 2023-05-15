@@ -3,6 +3,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 
 classifier: RandomForestClassifier = joblib.load('test.pkl')
 
@@ -19,7 +20,9 @@ classifier: RandomForestClassifier = joblib.load('test.pkl')
 #         ret, frame = cap.read()
 #         if ret:
 
-frame=cv2.imread('fist1/6.png')
+#frame=cv2.imread('fist1/6.png')
+#frame=cv2.imread('dislike1/8.png')
+frame=cv2.imread('like.png')
 
 with mp.solutions.hands.Hands(
     static_image_mode=True, max_num_hands=2, min_detection_confidence=0.5
@@ -46,7 +49,7 @@ with mp.solutions.hands.Hands(
     min_width = image_width
 
     if len(results.multi_hand_landmarks) >= 2:
-        print("if dla pliku dwie rece: ", file)
+        print("if dla pliku dwie rece: ") #, frame)
         if (
             results.multi_hand_landmarks[0]
             .landmark[mp.solutions.hands.Hands.HandLandmark.WRIST]
@@ -118,7 +121,7 @@ with mp.solutions.hands.Hands(
     else:
         print(
             "else dla pliku:  ",
-            #file,
+            #frame,
             "   o dlug: ",
             len(results.multi_hand_landmarks),
         )
@@ -176,6 +179,13 @@ with mp.solutions.hands.Hands(
         
     result = classifier.predict(np.expand_dims(tab, axis=0))
     print(result)
+
+    y_true = [0, 1, 2, 3]
+    
+    accuracy = accuracy_score(y_true, result, normalize=False)
+
+    # print the accuracy score
+    print("Accuracy: {:.2f}%".format(accuracy * 100))
 
     for hand_landmarks in results.multi_hand_landmarks:
         mp.solutions.drawing_utils.draw_landmarks(
