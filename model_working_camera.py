@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
-classifier: RandomForestClassifier = joblib.load('test.pkl')
+classifier: RandomForestClassifier = joblib.load('model_finito.pkl')
 
 # cap = cv2.VideoCapture(0)
 
@@ -20,9 +20,8 @@ classifier: RandomForestClassifier = joblib.load('test.pkl')
 #         ret, frame = cap.read()
 #         if ret:
 
-#frame=cv2.imread('fist1/6.png')
-#frame=cv2.imread('dislike1/8.png')
-frame=cv2.imread('like.png')
+frame=cv2.imread('testowy.jpg')
+y_true = ['fist']
 
 with mp.solutions.hands.Hands(
     static_image_mode=True, max_num_hands=2, min_detection_confidence=0.5
@@ -49,7 +48,7 @@ with mp.solutions.hands.Hands(
     min_width = image_width
 
     if len(results.multi_hand_landmarks) >= 2:
-        print("if dla pliku dwie rece: ") #, frame)
+        #print("if dla pliku dwie rece: ") #, frame)
         if (
             results.multi_hand_landmarks[0]
             .landmark[mp.solutions.hands.Hands.HandLandmark.WRIST]
@@ -119,12 +118,12 @@ with mp.solutions.hands.Hands(
                 )
 
     else:
-        print(
-            "else dla pliku:  ",
-            #frame,
-            "   o dlug: ",
-            len(results.multi_hand_landmarks),
-        )
+        # print(
+        #     "else dla pliku:  ",
+        #     #frame,
+        #     "   o dlug: ",
+        #     len(results.multi_hand_landmarks),
+        # )
         hand_landmarks = results.multi_hand_landmarks[0]
         for idx_hand in range(21):
             max_height = max(
@@ -180,7 +179,6 @@ with mp.solutions.hands.Hands(
     result = classifier.predict(np.expand_dims(tab, axis=0))
     print(result)
     
-    y_true = ['like']
     
     accuracy = accuracy_score(y_true, result, normalize=False)
 

@@ -8,25 +8,25 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
 FOLDERS = [
-    "/home/nikodem/IVSPA/dislike1",
-    "/home/nikodem/IVSPA/fist1",
-    "/home/nikodem/IVSPA/like1",
-    "/home/nikodem/IVSPA/palm1",
-    "/home/nikodem/IVSPA/peace1"
+    "/home/nikodem/IVSPA/dislike_raw",
+    "/home/nikodem/IVSPA/fist_raw",
+    "/home/nikodem/IVSPA/like_raw",
+    "/home/nikodem/IVSPA/palm_raw",
+    "/home/nikodem/IVSPA/peace_raw"
 ]
 
 # For static images:
 IMAGE_FILES = []
 
 for directory in FOLDERS:
-    directory_write = directory.removesuffix("1")
+    directory_write = directory.removesuffix("_raw")
 
     if not os.path.exists(directory_write):
         os.makedirs(directory_write)
 
     IMAGE_FILES.clear()
     for filename in os.listdir(directory):
-        if filename.endswith(".png"):
+        if filename.endswith(".jpg"):
             IMAGE_FILES.append(directory + "/" + filename)
             continue
         else:
@@ -210,7 +210,8 @@ for directory in FOLDERS:
 
 
 for directory in FOLDERS:
-    directory = directory.removesuffix("1")
+    print("JAZDA")
+    directory = directory.removesuffix("_raw")
     directory_write = f"{directory}_ready"
 
     if not os.path.exists(directory_write):

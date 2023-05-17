@@ -6,20 +6,21 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 import os
 
-classifier: RandomForestClassifier = joblib.load('model.pkl')
+classifier: RandomForestClassifier = joblib.load('model_finito.pkl')
+#classifier: RandomForestClassifier = joblib.load('model_test_proba.pkl')
 
 FOLDERS = [
-    "/home/nikodem/IVSPA/dislike_ready",
-    "/home/nikodem/IVSPA/fist_ready",
-    "/home/nikodem/IVSPA/like_ready",
-    "/home/nikodem/IVSPA/palm_ready",
-    "/home/nikodem/IVSPA/peace_ready"
+    "/home/nikodem/IVSPA/dislike_test",
+    "/home/nikodem/IVSPA/fist_test",
+    "/home/nikodem/IVSPA/like_test",
+    "/home/nikodem/IVSPA/palm_test",
+    "/home/nikodem/IVSPA/peace_test"
 ]
 
-#frame=cv2.imread('fist1/6.png')
-#frame=cv2.imread('dislike1/8.png')
-frame=cv2.imread('like.png')
-y_true = ['like']
+# #frame=cv2.imread('fist1/6.png')
+# #frame=cv2.imread('dislike1/8.png')
+# frame=cv2.imread('like.png')
+# y_true = ['like']
 
 dataset_all = []
 labels_all = []
@@ -28,7 +29,7 @@ for dataPath in FOLDERS:
     dataset = []
     labels = []
 
-    label_name = dataPath.removesuffix('_ready').split("/")[-1]
+    label_name = dataPath.removesuffix('_test').split("/")[-1]
     #print(labels)
 
     # read training file
