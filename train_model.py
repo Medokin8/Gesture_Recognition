@@ -2,8 +2,9 @@ import os
 import joblib
 import numpy as np
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score, KFold
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, classification_report
 
 FOLDERS = [
     "/home/nikodem/IVSPA/dislike_train",
@@ -26,6 +27,8 @@ FOLDSERS_VALID =[
     "/home/nikodem/IVSPA/peace_valid"
 ]
 
+Num_files = 100#630 maks
+num_folds = 5  # Number of cross-validation folds
 
 dataset = []
 labels = []
@@ -38,14 +41,19 @@ for dataPath in FOLDERS:
     label_name = dataPath.removesuffix('_train').split("/")[-1]
     #label_name = dataPath.removesuffix('_test').split("/")[-1]
     #print(labels)
-
+    
+    i=0
+    
     # read training file
     for file in os.listdir(dataPath):
+        if i >= Num_files :
+            break
         with open(f"{dataPath}/{file}", 'r') as f:
             data = f.read().removesuffix(";").split(';')
             data = np.array(data).astype(np.float32)
             dataset.append(data)
         labels.append(label_name)
+        i = i+1
 
 #print(labels)
 
@@ -67,7 +75,25 @@ for dataPath in FOLDSERS_VALID:
 
 classifier = RandomForestClassifier()
 
+
+# Cross-validation training
+scores = cross_val_score(classifier, dataset, labels, cv=num_folds)
+print(f'Cross-Validation Accuracy: {np.mean(scores):.4f} (+/- {np.std(scores):.4f})')
+
 classifier.fit(dataset, labels)
-score = classifier.score(dataset_valid, labels_valid)
-print(f'Accuracy : {score}')
-joblib.dump(classifier, f'model_finito.pkl')
+
+# score = classifier.score(dataset_valid, labels_valid)
+# print(f'Accuracy : {score}')
+
+joblib.dump(classifier, f'model_{Num_files}.pkl')
+
+# Confusion Matrix
+predictions = classifier.predict(dataset_valid)
+cm = confusion_matrix(labels_valid, predictions)
+print("Confusion Matrix:")
+print(cm)
+
+# Classification Report
+cr = classification_report(labels_valid, predictions)
+print("Classification Report:")
+print(cr)

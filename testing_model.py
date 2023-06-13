@@ -1,13 +1,19 @@
+import os
 import joblib
-import cv2
-import mediapipe as mp
+import numpy as np
+import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
-import os
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay, classification_report
 
-classifier: RandomForestClassifier = joblib.load('model_finito.pkl')
-#classifier: RandomForestClassifier = joblib.load('model_test_proba.pkl')
+MODELS_TRIANED = [
+    'model_10.pkl',
+    'model_50.pkl',
+    'model_100.pkl',
+    'model_400.pkl',
+    'model_630.pkl'
+]
+
 
 FOLDERS = [
     "/home/nikodem/IVSPA/dislike_test",
@@ -17,17 +23,10 @@ FOLDERS = [
     "/home/nikodem/IVSPA/peace_test"
 ]
 
-# #frame=cv2.imread('fist1/6.png')
-# #frame=cv2.imread('dislike1/8.png')
-# frame=cv2.imread('like.png')
-# y_true = ['like']
-
 dataset_all = []
 labels_all = []
 
 for dataPath in FOLDERS:
-    dataset = []
-    labels = []
 
     label_name = dataPath.removesuffix('_test').split("/")[-1]
     #print(labels)
@@ -37,42 +36,27 @@ for dataPath in FOLDERS:
         with open(f"{dataPath}/{file}", 'r') as f:
             data = f.read().removesuffix(";").split(';')
             data = np.array(data).astype(np.float32)
-            dataset.append(data)
             dataset_all.append(data)
-        labels.append(label_name)
         labels_all.append(label_name)
-    if not dataset:
-        continue
-        
-    result = classifier.predict(dataset)
-    #print(result)
 
-    accuracy = accuracy_score(labels, result, normalize=False)
-
-    # print the accuracy score
-    print(f"Accuracy for {label_name}: {accuracy/len(dataset)*100}%")
+for num_model in MODELS_TRIANED :
+    classifier: RandomForestClassifier = joblib.load(num_model)
+    #classifier: RandomForestClassifier = joblib.load('model_test_proba.pkl')  
+      
+    print(f'Classifier {num_model}')
+    # Confusion Matrix
+    predictions = classifier.predict(dataset_all)
+    cm = confusion_matrix(labels_all, predictions)
+    print("Confusion Matrix:")
+    print(cm)
     print()
 
-result = classifier.predict(dataset_all)
-#print(result)
+    #disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=list(set(labels_all)))
+    #disp.plot()
+    #plt.show()
 
-accuracy = accuracy_score(labels_all, result, normalize=False)
-
-# print the accuracy score
-print(f"Accuracy for model: {accuracy/len(dataset_all)*100}%")
-print()
-
-# Confusion_matrix
-#tn, fp, fn, tp = confusion_matrix(labels_all, result, labels=list(set(labels_all))).ravel()
-matrix = confusion_matrix(labels_all, result, labels=list(set(labels_all)))
-print("Confusion matrix:")
-print(matrix)
-# print(f"True negative:       {tn}")
-# print(f"False positive:      {fp}")
-# print(f"False negative:      {fn}")
-# print(f"True positive:       {tp}")
-# print()
-# print(f"Sensitivity:         {tp/(tp+fn)}")
-# print(f"Specificity:         {tn/(fp+tn)}")
-# print(f"Precision:           {tp/(tp+fp)}")
-# print(f"Accuracy:            {(tp+tn)/(tn+fp+fn+tp)}")
+    # Classification Report
+    cr = classification_report(labels_all, predictions, zero_division = 1)
+    print("Classification Report:")
+    print(cr)
+    print()
