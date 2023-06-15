@@ -6,11 +6,15 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay, classification_report
 
+import matplotlib
+matplotlib.use('TKAgg')
 MODELS_TRIANED = [
     'model_10.pkl',
     'model_50.pkl',
     'model_100.pkl',
+    'model_200.pkl',
     'model_400.pkl',
+    'model_500.pkl',
     'model_630.pkl'
 ]
 
@@ -51,12 +55,13 @@ for num_model in MODELS_TRIANED :
     print(cm)
     print()
 
-    #disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=list(set(labels_all)))
-    #disp.plot()
-    #plt.show()
-
     # Classification Report
     cr = classification_report(labels_all, predictions, zero_division = 1)
     print("Classification Report:")
     print(cr)
     print()
+
+    labels_names = ['dislike', 'fist', 'like', 'palm', 'peace']
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels_names) #list(set(labels_all)))
+    disp.plot()
+    plt.show()

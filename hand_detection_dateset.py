@@ -8,10 +8,10 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
 FOLDERS = [
-    "/home/nikodem/IVSPA/dislike_raw",
-    "/home/nikodem/IVSPA/fist_raw",
-    "/home/nikodem/IVSPA/like_raw",
-    "/home/nikodem/IVSPA/palm_raw",
+    #"/home/nikodem/IVSPA/dislike_raw",
+    #"/home/nikodem/IVSPA/fist_raw",
+    #"/home/nikodem/IVSPA/like_raw",
+    #"/home/nikodem/IVSPA/palm_raw",
     "/home/nikodem/IVSPA/peace_raw"
 ]
 
